@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: patrik.beka@gmail.com
+      changes:
+        - createTable:
+            tableName: gams_optimization
+            columns:
+              - column:
+                  name: optimization_start
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: level
+                  type: numeric
+              - column:
+                  name: margin
+                  type: numeric
+
+        - addPrimaryKey:
+            columnNames: optimization_start
+            constraintName: pk_gams_optimization
+            tableName: gams_optimization

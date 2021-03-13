@@ -1,0 +1,78 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("io.micronaut.application") version "1.4.2"
+}
+
+version = "0.1"
+group = "org.gams.integration"
+
+repositories {
+    mavenCentral()
+}
+
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("org.gams.integration.*")
+    }
+}
+
+dependencies {
+    compileOnly files('../gams-install-dir/gamsJavaApi/api/GAMSJavaAPI.jar')
+    testImplementation files('../gams-install-dir/gamsJavaApi/api/GAMSJavaAPI.jar')
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("io.micronaut.data:micronaut-data-processor")
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi")
+    annotationProcessor("io.micronaut.spring:micronaut-spring-annotation")
+    annotationProcessor("io.micronaut.spring:micronaut-spring-boot")
+    annotationProcessor("io.micronaut.spring:micronaut-spring-web-annotation")
+    implementation("io.swagger.core.v3:swagger-annotations")
+    compileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("io.micronaut.spring:micronaut-spring-annotation")
+    testAnnotationProcessor("io.micronaut.spring:micronaut-spring-boot")
+    testAnnotationProcessor("io.micronaut.spring:micronaut-spring-web-annotation")
+    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("javax.annotation:javax.annotation-api")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-management")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
+    implementation("io.micronaut.liquibase:micronaut-liquibase")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("io.micronaut:micronaut-http-server")
+    runtime("io.micronaut.spring:micronaut-spring-web")
+    runtime("io.micronaut.spring:micronaut-spring-boot")
+    implementation("io.micronaut.data:micronaut-data-spring")
+    implementation("io.micronaut.data:micronaut-data-spring-jpa")
+    implementation("org.springframework:spring-orm")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    compileOnly("com.h2database:h2")
+    testImplementation("com.h2database:h2")
+    testImplementation("org.mockito:mockito-core")
+
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "io.micronaut.test:micronaut-test-junit5"
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+
+application {
+    mainClass.set("org.gams.integration.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("15")
+    targetCompatibility = JavaVersion.toVersion("15")
+}
+
+
+
