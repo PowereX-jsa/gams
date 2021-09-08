@@ -4,6 +4,11 @@ USER root
 
 SHELL ["/bin/bash", "-c"]
 
+# git install
+RUN apt-get update -y
+RUN apt-get install -y git
+
+# copy gams files
 COPY gams-install-dir/gamsFiles /opt/gams/gamsFiles
 COPY gams-install-dir/gamsJavaApi /opt/gams/gamsJavaApi
 
