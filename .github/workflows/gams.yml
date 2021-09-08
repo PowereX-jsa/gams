@@ -1,7 +1,7 @@
 name: github actions gams 
 
 # TODO uncomment after test
-#on:
+on: push
 #  push:
 #    branches:
 #      - 'main'
