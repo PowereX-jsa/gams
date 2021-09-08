@@ -9,7 +9,7 @@ COPY gams-install-dir/gamsJavaApi /opt/gams/gamsJavaApi
 
 # install gams
 WORKDIR /opt/gams
-RUN ls -la /opt/gams
+#RUN ls -la /opt/gams
 RUN ls -la /opt/gams/gamsFiles
 RUN /opt/gams/gamsFiles/linux_x64_64_sfx.exe
 
