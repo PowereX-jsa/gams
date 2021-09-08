@@ -41,9 +41,9 @@ jobs:
       - name: Set docker tag
         run: |
           if [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
-              echo "TAG=latest,$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+              echo "TAG=${{ secrets.DOCKER_HUB_USERNAME }}/gams:latest,${{ secrets.DOCKER_HUB_USERNAME }}/gams:$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
           else
-              echo "TAG=test-deploy" >> "$GITHUB_ENV"
+              echo "TAG=${{ secrets.DOCKER_HUB_USERNAME }}/gams:test-deploy" >> "$GITHUB_ENV"
           fi
 
       - name: Set up Docker Buildx
@@ -57,7 +57,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/gams:latest,${{ secrets.DOCKER_HUB_USERNAME }}/gams:${{ env.TAG }}
+          tags: ${{ env.TAG }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
