@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM powerex/gams-init:latest 
 
 USER root
 
@@ -9,7 +9,9 @@ RUN apt-get update -y
 RUN apt-get install -y git
 
 # copy gams files
-COPY gams-install-dir/gamsFiles /opt/gams/gamsFiles
+COPY gams-install-dir/gamsFiles/docker-install-java.sh /opt/gams/gamsFiles/docker-install-java.sh
+COPY gams-install-dir/gamsFiles/test-file.gms /opt/gams/gamsFiles/test-file.gms
+
 COPY gams-install-dir/gamsJavaApi /opt/gams/gamsJavaApi
 
 # install gams
