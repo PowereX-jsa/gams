@@ -1,12 +1,13 @@
 name: github actions gams 
 
 on:
-  pull_request:
-    paths:
-      - './**'
-  push:
-    branches:
-      - 'master'
+  push
+#   pull_request:
+#     paths:
+#       - './**'
+#   push:
+#     branches:
+#       - 'master'
 
 jobs:
   build:
