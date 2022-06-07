@@ -1,6 +1,9 @@
 name: github actions gams 
 
 on:
+  pull_request:
+    paths:
+      - './**'
   push:
     branches:
       - 'master'
@@ -43,6 +46,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
+          platform: linux/amd64,linux/arm64
           tags: ${{ env.TAG }}
 
       - name: Image digest
