@@ -3,19 +3,20 @@ name: gams lambda docker build
 on:
   pull_request:
     paths:
-     - 'gams-lambda-java/**'
+      - 'gams-lambda-java/**'
   push:
     branches:
       - 'master'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    env:
+      working-directory: "./gams-lambda-java"
     defaults:
       run:
         shell: bash
-        working-directory: "gams-lambda-java/"
+        working-directory: ${{ env.working-directory }}
 
     steps:
       - name: Checkout
