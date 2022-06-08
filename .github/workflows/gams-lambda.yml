@@ -3,7 +3,7 @@ name: gams lambda docker build
 on:
   pull_request:
     paths:
-      - 'gams-lambda-java/**'
+      - 'images/gams-lambda-java/**'
   push:
     branches:
       - 'master'
@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      working-directory: "./gams-lambda-java"
+      working-directory: "./images/gams-lambda-java"
     defaults:
       run:
         shell: bash
