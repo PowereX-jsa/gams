@@ -9,15 +9,16 @@ RUN apt-get update -y
 RUN apt-get install -y git
 
 # copy gams files
-COPY gams-install-dir/gamsFiles/docker-install-java.sh /opt/gams/gamsFiles/docker-install-java.sh
-COPY gams-install-dir/gamsFiles/test-file.gms /opt/gams/gamsFiles/test-file.gms
+COPY ./gams-install-dir/gamsFiles/docker-install-java.sh /opt/gams/gamsFiles/docker-install-java.sh
+COPY ./gams-install-dir/gamsFiles/test-file.gms /opt/gams/gamsFiles/test-file.gms
 
-COPY gams-install-dir/gamsJavaApi /opt/gams/gamsJavaApi
+COPY ./gams-install-dir/gamsJavaApi /opt/gams/gamsJavaApi
 
 # install gams
 WORKDIR /opt/gams
 RUN ls -la /opt/gams
 RUN ls -la /opt/gams/gamsFiles
+RUN chmod +x /opt/gams/gamsFiles/linux_x64_64_sfx.exe
 RUN /opt/gams/gamsFiles/linux_x64_64_sfx.exe
 
 # remove install file
