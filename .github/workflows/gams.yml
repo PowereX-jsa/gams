@@ -3,7 +3,7 @@ name: github actions gams
 on:
   pull_request:
     paths:
-      - './images/gams/**'
+      - 'images/gams/**'
   push:
     branches:
       - 'master'
