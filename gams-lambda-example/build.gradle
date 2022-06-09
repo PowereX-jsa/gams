@@ -26,6 +26,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
 
     compileOnly "org.projectlombok:lombok"
+    compileOnly files('gamsJavaApi/api/GAMSJavaAPI.jar')
 
     annotationProcessor "org.projectlombok:lombok"
 }
