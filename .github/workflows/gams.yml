@@ -1,23 +1,22 @@
 name: github actions gams
 
 on:
-  push
-# TODO for some reason this shit is not working
-#  pull_request:
-#    paths:
-#     - './**'
-#  push:
-#    branches:
-#      - 'master'
+  pull_request:
+    paths:
+      - 'images/gams/**'
+  push:
+    branches:
+      - 'master'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    env:
+      working-directory: "./images/gams"
     defaults:
       run:
         shell: bash
-        working-directory: ./
+        working-directory: ${{ env.working-directory }}
 
     steps:
       - name: Checkout
@@ -49,8 +48,8 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./Dockerfile
+          context: ${{ env.working-directory }}
+          file: ${{ env.working-directory }}/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.TAG }}
