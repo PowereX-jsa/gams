@@ -1,7 +1,13 @@
 micronaut:
   application:
     name: gamsLambdaExample
+
 netty:
   default:
     allocator:
       max-order: 3
+
+logging:
+  level:
+    root: INFO
+    org.gams.integration: TRACE
