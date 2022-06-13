@@ -29,6 +29,14 @@ dependencies {
     compileOnly files('gamsJavaApi/api/GAMSJavaAPI.jar')
 
     annotationProcessor "org.projectlombok:lombok"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'io.micronaut.test:micronaut-test-junit5'
+    testImplementation("org.mockito:mockito-core")
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+
 }
 
 
