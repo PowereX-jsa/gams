@@ -18,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 @Slf4j
 @RequiredArgsConstructor
-// TODO testy
+// TODO tests
 public class S3Service {
 
-  // TODO configuracne
+  // TODO via configuration
   private static final String INPUT_DATA_BUCKET_NAME = "data-input-lambda-test";
   private static final String OUTPUT_DATA_BUCKET_NAME = "data-output-lambda-test";
 
@@ -54,7 +54,7 @@ public class S3Service {
     return inputStream.readAllBytes();
   }
 
-  // needs to have following env vars set (in idea via run configuration):
+  // needs to have following env vars set (in idea via run configuration or in docker container):
   // AWS_ACCESS_KEY_ID
   // AWS_SECRET_ACCESS_KEY
   // AWS_SESSION_TOKEN
@@ -62,7 +62,7 @@ public class S3Service {
     return AmazonS3ClientBuilder
         .standard()
         .withRegion(
-            Regions.EU_CENTRAL_1) // TODO tiez konfiguracne, su rozdielne na dev/prod accountoch
+            Regions.EU_CENTRAL_1) // TODO should be configurable (maybe via env var as in R apis?) - it`s different in dev/prod aws accounts
         .build();
   }
 }
