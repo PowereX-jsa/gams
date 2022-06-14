@@ -12,3 +12,5 @@ out/
 .settings
 .classpath
 .factorypath
+
+/docker-compose.yml

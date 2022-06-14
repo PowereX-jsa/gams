@@ -7,7 +7,7 @@ netty:
     allocator:
       max-order: 3
 
-logging:
-  level:
+logger:
+  levels:
     root: INFO
     org.gams.integration: TRACE
