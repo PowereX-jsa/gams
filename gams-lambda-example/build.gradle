@@ -18,6 +18,7 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut.aws:micronaut-function-aws")
+    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime")
 
     // aws stuff
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.233'
@@ -28,6 +29,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
 
     compileOnly "org.projectlombok:lombok"
+    compileOnly("org.graalvm.nativeimage:svm")
     compileOnly files('gamsJavaApi/api/GAMSJavaAPI.jar')
 
     annotationProcessor "org.projectlombok:lombok"
@@ -51,8 +53,17 @@ java {
 }
 
 graalvmNative.toolchainDetection = false
+
+tasks.named("dockerfileNative") {
+    args(
+            "-XX:MaximumHeapSizePercent=80",
+            "-Dio.netty.allocator.numDirectArenas=0",
+            "-Dio.netty.noPreferDirect=true"
+    )
+}
+
 micronaut {
-    runtime("netty")
+    runtime("lambda_provided")
     testRuntime("junit5")
     processing {
         incremental(true)
