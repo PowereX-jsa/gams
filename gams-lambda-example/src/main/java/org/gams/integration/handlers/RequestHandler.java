@@ -4,22 +4,26 @@ import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification.S3BucketEntity;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.function.aws.MicronautRequestHandler;
+import jakarta.inject.Inject;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gams.integration.services.ManifestReader;
 import org.gams.integration.services.S3Service;
 
 @Slf4j
 @Introspected
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class RequestHandler extends
     MicronautRequestHandler<S3Event, String> {
 
-  private final S3Service s3Service;
-  private final ManifestReader manifestReader;
+  @Inject
+  private S3Service s3Service;
+
+  @Inject
+  private ManifestReader manifestReader;
 
   @Override
   public String execute(S3Event input) {
