@@ -16,7 +16,6 @@ import org.gams.integration.services.S3Service;
 
 @Slf4j
 @Introspected
-@NoArgsConstructor
 // TODO try native build for graalvm -> should be much faster
 // TODO tests like this: https://guides.micronaut.io/latest/mn-serverless-function-aws-lambda-gradle-java.html
 public class RequestHandler extends
@@ -32,7 +31,8 @@ public class RequestHandler extends
   public String execute(S3Event input) {
     log.info("request received - event: '{}'", input.toString());
 
-    return Optional.ofNullable(input.getRecords().get(0))
+    return input.getRecords().stream()
+        .findFirst()
         .map(s3EventNotificationRecord -> {
           log.info("notif record: '{}'", s3EventNotificationRecord.toString());
 
