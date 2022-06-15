@@ -1,0 +1,14 @@
+version: '2.0'
+
+services:
+  lambda-test:
+    image: lambda-test:latest
+    container_name: lambda-test
+    environment:
+      # fill these
+      AWS_ACCESS_KEY_ID: ""
+      AWS_SECRET_ACCESS_KEY: ""
+      AWS_SESSION_TOKEN: ""
+    ports:
+      - 9000:8080
+    # TODO might need to add gams license file
