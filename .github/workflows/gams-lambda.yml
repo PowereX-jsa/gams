@@ -5,6 +5,8 @@ on:
     paths:
       - 'images/gams-lambda-java/**'
   push:
+    paths:
+      - 'images/gams-lambda-java/**'
     branches:
       - 'master'
 
