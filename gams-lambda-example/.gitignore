@@ -14,3 +14,4 @@ out/
 .factorypath
 
 /docker-compose.yml
+/gamslice.txt
