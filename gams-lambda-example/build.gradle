@@ -44,13 +44,6 @@ dependencies {
 
 }
 
-shadowJar {
-    from("gamsJavaApi/api")
-            {
-                include '*'
-            }
-}
-
 application {
     mainClass.set("org.gams.integration.Application")
 }
