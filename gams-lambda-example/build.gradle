@@ -1,0 +1,78 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.micronaut.application") version "3.4.1"
+}
+
+version = "0.1"
+group = "org.gams.integration"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut.aws:micronaut-function-aws")
+    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime")
+
+    // aws stuff
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.233'
+    implementation 'com.amazonaws:aws-java-sdk-lambda:1.12.233'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+
+    runtimeOnly("ch.qos.logback:logback-classic")
+
+    compileOnly "org.projectlombok:lombok"
+    compileOnly("org.graalvm.nativeimage:svm")
+    compileOnly files('gamsJavaApi/api/GAMSJavaAPI.jar')
+
+    annotationProcessor "org.projectlombok:lombok"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'io.micronaut.test:micronaut-test-junit5'
+    testImplementation("org.mockito:mockito-core")
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+
+}
+
+shadowJar {
+    from("gamsJavaApi/api")
+            {
+                include '*'
+            }
+}
+
+application {
+    mainClass.set("org.gams.integration.Application")
+}
+java {
+    sourceCompatibility = JavaVersion.toVersion("11")
+    targetCompatibility = JavaVersion.toVersion("11")
+}
+
+graalvmNative.toolchainDetection = false
+
+tasks.named("dockerfileNative") {
+    args(
+            "-XX:MaximumHeapSizePercent=80",
+            "-Dio.netty.allocator.numDirectArenas=0",
+            "-Dio.netty.noPreferDirect=true"
+    )
+}
+
+micronaut {
+    runtime("lambda_provided")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("org.gams.integration.*")
+    }
+}
