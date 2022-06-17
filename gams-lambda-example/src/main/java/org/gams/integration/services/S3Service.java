@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 @Singleton
 @Slf4j
@@ -27,7 +28,7 @@ public class S3Service {
   private static final String INPUT_DATA_BUCKET_NAME = "data-input-lambda-test";
   private static final String OUTPUT_DATA_BUCKET_NAME = "data-output-lambda-test";
 
-  public void uploadFile(String folder, File file) {
+  public ImmutablePair<String, String> uploadFile(String folder, File file) {
     AmazonS3 client = createS3Client();
 
     String s3Key = Path.of(folder, file.getName()).toString();
@@ -38,9 +39,11 @@ public class S3Service {
     log.info("successfully uploaded '{}' to s3 bucket: '{}' from local file: '{}'", s3Key,
         OUTPUT_DATA_BUCKET_NAME, file);
     log.debug("rawObjectMetadata='{}'", result.getMetadata().getRawMetadata());
+
+    return new ImmutablePair<>(OUTPUT_DATA_BUCKET_NAME, s3Key);
   }
 
-  public void downloadFile(String key, File targetFile) {
+  public File downloadFile(String key, File targetFile) {
     AmazonS3 client = createS3Client();
 
     ObjectMetadata objectMetadata = client.getObject(
@@ -48,6 +51,8 @@ public class S3Service {
     log.info("successfully download '{}' from s3 bucket: '{}' to local file: '{}'", key,
         INPUT_DATA_BUCKET_NAME, targetFile);
     log.debug("rawObjectMetadata='{}'", objectMetadata.getRawMetadata());
+
+    return targetFile;
   }
 
   public String getParentOfS3File(String s3KeyFile) {
