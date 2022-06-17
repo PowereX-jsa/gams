@@ -11,3 +11,7 @@ logger:
   levels:
     root: INFO
     org.gams.integration: TRACE
+
+gams:
+  systemDir: ${GAMS_SYSTEM_DIR:./gams33.2_linux_x64_64_sfx}
+  rootWorkingDir: ${GAMS_ROOT_WORKING_DIR:/tmp}

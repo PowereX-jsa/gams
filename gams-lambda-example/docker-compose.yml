@@ -11,4 +11,6 @@ services:
       AWS_SESSION_TOKEN: ""
     ports:
       - 9000:8080
-    # TODO might need to add gams license file
+    # add your gams license file
+    volumes:
+      - ./gamslice.txt:/var/task/gams33.2_linux_x64_64_sfx/gamslice.txt
