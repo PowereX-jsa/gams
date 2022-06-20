@@ -6,6 +6,10 @@ plugins {
 version = "0.1"
 group = "org.gams.integration"
 
+ext {
+    testContainersVersion = "1.17.2"
+}
+
 repositories {
     mavenCentral()
 }
@@ -22,10 +26,9 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // aws stuff
-    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.233'
-    implementation 'com.amazonaws:aws-java-sdk-lambda:1.12.233'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.237'
+    implementation 'com.amazonaws:aws-java-sdk-lambda:1.12.237'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
-    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
 
     runtimeOnly("ch.qos.logback:logback-classic")
 
@@ -35,12 +38,17 @@ dependencies {
 
     annotationProcessor "org.projectlombok:lombok"
 
+    testImplementation "org.testcontainers:junit-jupiter:${testContainersVersion}"
+    testImplementation "org.testcontainers:localstack:${testContainersVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'io.micronaut.test:micronaut-test-junit5'
     testImplementation("org.mockito:mockito-core")
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+
+    testCompileOnly "org.projectlombok:lombok"
+    testAnnotationProcessor "org.projectlombok:lombok"
 
 }
 

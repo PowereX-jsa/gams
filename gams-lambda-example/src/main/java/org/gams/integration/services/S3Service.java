@@ -1,8 +1,6 @@
 package org.gams.integration.services;
 
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
@@ -21,15 +19,17 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 @Singleton
 @Slf4j
 @RequiredArgsConstructor
-// TODO tests
 public class S3Service {
 
+  private final S3ClientService clientService;
+
   // TODO via configuration
-  private static final String INPUT_DATA_BUCKET_NAME = "data-input-lambda-test";
-  private static final String OUTPUT_DATA_BUCKET_NAME = "data-output-lambda-test";
+  public static final String INPUT_DATA_BUCKET_NAME = "data-input-lambda-test";
+  public static final String OUTPUT_DATA_BUCKET_NAME = "data-output-lambda-test";
 
   public ImmutablePair<String, String> uploadFile(String folder, File file) {
-    AmazonS3 client = createS3Client();
+
+    AmazonS3 client = clientService.getClient();
 
     String s3Key = Path.of(folder, file.getName()).toString();
 
@@ -44,7 +44,8 @@ public class S3Service {
   }
 
   public File downloadFile(String key, File targetFile) {
-    AmazonS3 client = createS3Client();
+
+    AmazonS3 client = clientService.getClient();
 
     ObjectMetadata objectMetadata = client.getObject(
         new GetObjectRequest(INPUT_DATA_BUCKET_NAME, key), targetFile);
@@ -61,7 +62,8 @@ public class S3Service {
 
   @SneakyThrows(IOException.class)
   public byte[] downloadFile(String key) {
-    AmazonS3 client = createS3Client();
+
+    AmazonS3 client = clientService.getClient();
 
     S3Object object = client.getObject(new GetObjectRequest(INPUT_DATA_BUCKET_NAME, key));
     log.info("successfuly download '{}' from s3 bucket: '{}' to byte array", key,
@@ -71,17 +73,5 @@ public class S3Service {
     InputStream inputStream = new BufferedInputStream(object.getObjectContent());
 
     return inputStream.readAllBytes();
-  }
-
-  // needs to have following env vars set (in idea via run configuration or in docker container):
-  // AWS_ACCESS_KEY_ID
-  // AWS_SECRET_ACCESS_KEY
-  // AWS_SESSION_TOKEN
-  private AmazonS3 createS3Client() {
-    return AmazonS3ClientBuilder
-        .standard()
-        .withRegion(
-            Regions.EU_CENTRAL_1) // TODO should be configurable (maybe via env var as in R apis?) - it`s different in dev/prod aws accounts
-        .build();
   }
 }
