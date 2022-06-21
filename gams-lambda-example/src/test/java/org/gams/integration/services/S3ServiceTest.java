@@ -1,10 +1,7 @@
 package org.gams.integration.services;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
 
-import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.io.File;
@@ -15,14 +12,10 @@ import java.nio.file.Path;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.gams.integration.utils.AwsS3Utils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.gams.integration.services.s3.S3Service;
+import org.gams.integration.utils.LocalS3ClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.testcontainers.containers.localstack.LocalStackContainer;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @MicronautTest
 @Slf4j
@@ -32,27 +25,9 @@ class S3ServiceTest {
   private S3Service s3Service;
 
   @Inject
-  private S3ClientService clientService;
-
-  private static LocalStackContainer s3Container;
+  private LocalS3ClientService s3Client;
 
   private static final String TEST_JSON = "\"{\"test\": \"value\"}\"";
-
-  @BeforeAll
-  public static void setupServer() {
-    s3Container = AwsS3Utils.runS3Container();
-  }
-
-  // needs to be closed after test run
-  @AfterAll
-  public static void stopServer() {
-    AwsS3Utils.shutdownS3Container(s3Container);
-  }
-
-  @BeforeEach
-  void setUpMocks() {
-    lenient().when(clientService.getClient()).thenReturn(AwsS3Utils.getS3Client(s3Container));
-  }
 
   @Test
   void getParentOfS3FileTest() {
@@ -65,7 +40,7 @@ class S3ServiceTest {
   void downloadFileTest(@TempDir Path tempDir) {
     String filename = "test.json";
 
-    AwsS3Utils.uploadToS3(s3Container, S3Service.INPUT_DATA_BUCKET_NAME, filename, TEST_JSON);
+    s3Client.uploadToS3(S3Service.INPUT_DATA_BUCKET_NAME, filename, TEST_JSON);
 
     File file = Path.of(tempDir.toString(), filename).toFile();
 
@@ -82,7 +57,7 @@ class S3ServiceTest {
   void downloadFileBytesTest() {
     String filename = "test.json";
 
-    AwsS3Utils.uploadToS3(s3Container, S3Service.INPUT_DATA_BUCKET_NAME, filename, TEST_JSON);
+    s3Client.uploadToS3(S3Service.INPUT_DATA_BUCKET_NAME, filename, TEST_JSON);
 
     byte[] jsonAsBytes = s3Service.downloadFile(filename);
 
@@ -92,7 +67,7 @@ class S3ServiceTest {
   @Test
   @SneakyThrows(IOException.class)
   void uploadFileTest(@TempDir Path tempDir) {
-    AwsS3Utils.createBucket(s3Container, S3Service.OUTPUT_DATA_BUCKET_NAME);
+    s3Client.createBucket(S3Service.OUTPUT_DATA_BUCKET_NAME);
 
     String filename = "test.json";
 
@@ -109,12 +84,7 @@ class S3ServiceTest {
     assertThat(result.getKey()).isEqualTo(S3Service.OUTPUT_DATA_BUCKET_NAME);
     assertThat(result.getValue()).isEqualTo(file.getAbsolutePath());
 
-    assertThat(AwsS3Utils.downloadJsonFromS3(s3Container, S3Service.OUTPUT_DATA_BUCKET_NAME,
+    assertThat(s3Client.downloadJsonFromS3(S3Service.OUTPUT_DATA_BUCKET_NAME,
         result.getValue())).isEqualTo(TEST_JSON);
-  }
-
-  @MockBean(S3ClientService.class)
-  S3ClientService s3ClientService() {
-    return mock(S3ClientService.class);
   }
 }

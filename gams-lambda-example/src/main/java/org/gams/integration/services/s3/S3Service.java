@@ -1,4 +1,4 @@
-package org.gams.integration.services;
+package org.gams.integration.services.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -21,7 +21,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 @RequiredArgsConstructor
 public class S3Service {
 
-  private final S3ClientService clientService;
+  private final ClientService clientService;
 
   // TODO via configuration
   public static final String INPUT_DATA_BUCKET_NAME = "data-input-lambda-test";
@@ -38,12 +38,13 @@ public class S3Service {
 
     log.info("successfully uploaded '{}' to s3 bucket: '{}' from local file: '{}'", s3Key,
         OUTPUT_DATA_BUCKET_NAME, file);
-    log.debug("rawObjectMetadata='{}'", result.getMetadata().getRawMetadata());
+    log.trace("rawObjectMetadata='{}'", result.getMetadata().getRawMetadata());
 
     return new ImmutablePair<>(OUTPUT_DATA_BUCKET_NAME, s3Key);
   }
 
   public File downloadFile(String key, File targetFile) {
+    log.debug("preparing to download following file: '{}'", key);
 
     AmazonS3 client = clientService.getClient();
 
@@ -51,7 +52,7 @@ public class S3Service {
         new GetObjectRequest(INPUT_DATA_BUCKET_NAME, key), targetFile);
     log.info("successfully download '{}' from s3 bucket: '{}' to local file: '{}'", key,
         INPUT_DATA_BUCKET_NAME, targetFile);
-    log.debug("rawObjectMetadata='{}'", objectMetadata.getRawMetadata());
+    log.trace("rawObjectMetadata='{}'", objectMetadata.getRawMetadata());
 
     return targetFile;
   }
@@ -62,13 +63,14 @@ public class S3Service {
 
   @SneakyThrows(IOException.class)
   public byte[] downloadFile(String key) {
+    log.debug("preparing to download following file: '{}'", key);
 
     AmazonS3 client = clientService.getClient();
 
     S3Object object = client.getObject(new GetObjectRequest(INPUT_DATA_BUCKET_NAME, key));
     log.info("successfuly download '{}' from s3 bucket: '{}' to byte array", key,
         INPUT_DATA_BUCKET_NAME);
-    log.debug("rawObjectMetadata='{}'", object.getObjectMetadata().getRawMetadata());
+    log.trace("rawObjectMetadata='{}'", object.getObjectMetadata().getRawMetadata());
 
     InputStream inputStream = new BufferedInputStream(object.getObjectContent());
 

@@ -1,4 +1,4 @@
-package org.gams.integration.services;
+package org.gams.integration.services.s3;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
-public class S3ClientService {
+public class AwsS3ClientService implements ClientService {
 
   public AmazonS3 getClient() {
     return AmazonS3ClientBuilder

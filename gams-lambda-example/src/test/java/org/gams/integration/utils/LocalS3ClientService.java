@@ -5,21 +5,35 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
+import io.micronaut.context.annotation.Replaces;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Singleton;
+import java.io.File;
 import java.io.IOException;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.gams.integration.services.s3.ClientService;
+import org.gams.integration.services.s3.AwsS3ClientService;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
+@Replaces(AwsS3ClientService.class)
+@Singleton
 @Slf4j
-public class AwsS3Utils {
+public class LocalS3ClientService implements ClientService {
 
-  private static final DockerImageName LOCALSTACK_DOCKER_IMAGE = DockerImageName.parse(
+  private final DockerImageName LOCALSTACK_DOCKER_IMAGE = DockerImageName.parse(
       "localstack/localstack:0.14.3");
+  @Getter
+  private final LocalStackContainer s3Container;
 
-  public static LocalStackContainer runS3Container() {
-    // runs local s3
-    final var s3Container = new LocalStackContainer(LOCALSTACK_DOCKER_IMAGE).withServices(S3);
+  public LocalS3ClientService() {
+    log.debug("MockedS3ClientService.<init>");
+    s3Container = new LocalStackContainer(LOCALSTACK_DOCKER_IMAGE).withServices(S3);
+
+    // needs to be started for getting endpoint configuration
     s3Container.start();
 
     // sets up necessary props for local s3
@@ -32,18 +46,10 @@ public class AwsS3Utils {
     System.setProperty("s3.region", s3Container.getEndpointConfiguration(S3).getSigningRegion());
 
     log.debug("created local s3 container: '{}'", s3Container);
-
-    return s3Container;
   }
 
-  public static void shutdownS3Container(LocalStackContainer s3Container) {
-    if (s3Container.isRunning()) {
-      log.debug("stopping s3 container");
-      s3Container.stop();
-    }
-  }
-
-  public static AmazonS3 getS3Client(LocalStackContainer s3Container) {
+  @Override
+  public AmazonS3 getClient() {
     log.debug("creating s3 client for local s3 container");
 
     return AmazonS3ClientBuilder.standard()
@@ -53,27 +59,53 @@ public class AwsS3Utils {
         .build();
   }
 
-  public static void createBucket(LocalStackContainer s3Container, String bucketName) {
-    AmazonS3 client = getS3Client(s3Container);
+  public void createBucket(String bucketName) {
+    AmazonS3 client = getClient();
 
     client.createBucket(bucketName);
   }
-  public static void uploadToS3(LocalStackContainer s3Container, String bucketName, String key,
-      String content) {
-    AmazonS3 client = getS3Client(s3Container);
 
-    client.createBucket(bucketName);
+  public void uploadToS3(String bucketName, String key, String content) {
+    AmazonS3 client = getClient();
+
+    if (!client.doesBucketExistV2(bucketName)) {
+      client.createBucket(bucketName);
+    }
 
     client.putObject(bucketName, key, content);
   }
 
+  public void uploadToS3(String bucketName, String key, File file) {
+    AmazonS3 client = getClient();
+
+    if (!client.doesBucketExistV2(bucketName)) {
+      client.createBucket(bucketName);
+    }
+
+    client.putObject(bucketName, key, file);
+  }
+
   @SneakyThrows(IOException.class)
-  public static String downloadJsonFromS3(LocalStackContainer s3Container, String bucketName,
-      String key) {
-    AmazonS3 client = getS3Client(s3Container);
+  public String downloadJsonFromS3(String bucketName, String key) {
+    AmazonS3 client = getClient();
 
     S3Object s3Object = client.getObject(bucketName, key);
 
     return new String(s3Object.getObjectContent().readAllBytes());
+  }
+
+  @PostConstruct
+  void setUpBuckets() {
+    // TODO create buckets
+  }
+
+  @PreDestroy
+  void shutdownS3() {
+    if (s3Container.isRunning()) {
+
+      log.debug("container still running, shutting down");
+
+      s3Container.stop();
+    }
   }
 }

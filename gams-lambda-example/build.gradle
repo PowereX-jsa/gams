@@ -24,6 +24,8 @@ dependencies {
     implementation("io.micronaut.aws:micronaut-function-aws")
     implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime")
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation "org.testcontainers:localstack:${testContainersVersion}"
+
 
     // aws stuff
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.237'
@@ -48,6 +50,8 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 
     testCompileOnly "org.projectlombok:lombok"
+
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     testAnnotationProcessor "org.projectlombok:lombok"
 
 }
@@ -77,4 +81,9 @@ micronaut {
         incremental(true)
         annotations("org.gams.integration.*")
     }
+}
+
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
 }
