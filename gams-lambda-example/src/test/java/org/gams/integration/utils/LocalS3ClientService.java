@@ -16,6 +16,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.gams.integration.services.s3.ClientService;
 import org.gams.integration.services.s3.AwsS3ClientService;
+import org.gams.integration.services.s3.S3Service;
 import org.testcontainers.containers.localstack.LocalStackContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -96,7 +97,10 @@ public class LocalS3ClientService implements ClientService {
 
   @PostConstruct
   void setUpBuckets() {
-    // TODO create buckets
+    AmazonS3 client = getClient();
+
+    client.createBucket(S3Service.INPUT_DATA_BUCKET_NAME);
+    client.createBucket(S3Service.OUTPUT_DATA_BUCKET_NAME);
   }
 
   @PreDestroy
