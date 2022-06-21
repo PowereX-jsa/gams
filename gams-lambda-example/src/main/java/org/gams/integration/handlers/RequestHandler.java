@@ -2,6 +2,7 @@ package org.gams.integration.handlers;
 
 import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification.S3BucketEntity;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.function.aws.MicronautRequestHandler;
 import jakarta.inject.Inject;
@@ -14,14 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.gams.integration.services.GamsService;
 import org.gams.integration.services.ManifestReader;
-import org.gams.integration.services.S3Service;
+import org.gams.integration.services.s3.S3Service;
 
 @Slf4j
 @Introspected
 // TODO try native build for graalvm -> should be much faster
-// TODO tests like this: https://guides.micronaut.io/latest/mn-serverless-function-aws-lambda-gradle-java.html
-public class RequestHandler extends
-    MicronautRequestHandler<S3Event, String> {
+public class RequestHandler extends MicronautRequestHandler<S3Event, String> {
 
   @Inject
   private S3Service s3Service;
@@ -32,6 +31,15 @@ public class RequestHandler extends
   @Inject
   private GamsService gamsService;
 
+  // Used in AWS
+  public RequestHandler() {
+  }
+
+  // Used in tests
+  public RequestHandler(ApplicationContext applicationContext) {
+    super(applicationContext);
+  }
+
   @Override
   public String execute(S3Event input) {
     log.info("request received - event: '{}'", input.toString());
@@ -39,10 +47,7 @@ public class RequestHandler extends
     return input.getRecords().stream()
         .findFirst()
         .map(s3EventNotificationRecord -> {
-          log.info("notif record: '{}'", s3EventNotificationRecord.toString());
-
-          S3BucketEntity bucket = s3EventNotificationRecord.getS3()
-              .getBucket();
+          S3BucketEntity bucket = s3EventNotificationRecord.getS3().getBucket();
           String manifestFileKey = s3EventNotificationRecord.getS3().getObject().getKey();
 
           log.info("bucket: '{}'", bucket.toString());
