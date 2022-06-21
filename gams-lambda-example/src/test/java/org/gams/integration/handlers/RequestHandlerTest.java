@@ -68,9 +68,6 @@ class RequestHandlerTest {
   @Test
   @SneakyThrows
   void testHandler() {
-
-    // TODO mock only client, upload files, trigger event (execute), check output gams file
-
     // mocking relevant content for s3 put event
     S3Event event = mock(S3Event.class);
     S3EventNotificationRecord eventRecord = mock(S3EventNotificationRecord.class);
