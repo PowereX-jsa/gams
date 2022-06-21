@@ -26,7 +26,6 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation "org.testcontainers:localstack:${testContainersVersion}"
 
-
     // aws stuff
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.237'
     implementation 'com.amazonaws:aws-java-sdk-lambda:1.12.237'
@@ -46,6 +45,8 @@ dependencies {
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'io.micronaut.test:micronaut-test-junit5'
     testImplementation("org.mockito:mockito-core")
+
+    testImplementation files('gamsJavaApi/api/GAMSJavaAPI.jar')
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 
