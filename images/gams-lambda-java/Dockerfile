@@ -1,6 +1,6 @@
 FROM powerex/gams-init:latest
 
-FROM public.ecr.aws/lambda/java:11
+FROM public.ecr.aws/lambda/java:17
 
 RUN mkdir ./gams
 
