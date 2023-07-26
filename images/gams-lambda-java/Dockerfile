@@ -11,6 +11,7 @@ RUN /opt/gams/linux_x64_64_sfx.exe
 
 # TODO export gams system dir as env var
 RUN ls -la "/opt/gams"
+RUN whereis gams
 
 # remove installation file 
 RUN rm /opt/gams/linux_x64_64_sfx.exe
