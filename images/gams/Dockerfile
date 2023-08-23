@@ -1,4 +1,4 @@
-FROM powerex/gams-init:latest 
+FROM powerex/gams-init:44.2.0 
 
 USER root
 
@@ -12,14 +12,14 @@ RUN apt-get install -y git
 COPY ./gams-install-dir/gamsFiles/docker-install-java.sh /opt/gams/gamsFiles/docker-install-java.sh
 COPY ./gams-install-dir/gamsFiles/test-file.gms /opt/gams/gamsFiles/test-file.gms
 
-COPY ./gams-install-dir/gamsJavaApi /opt/gams/gamsJavaApi
-
 # install gams
 WORKDIR /opt/gams
 RUN ls -la /opt/gams
 RUN ls -la /opt/gams/gamsFiles
 RUN chmod +x /opt/gams/gamsFiles/linux_x64_64_sfx.exe
 RUN /opt/gams/gamsFiles/linux_x64_64_sfx.exe
+
+ENV GAMS_SYSTEM_DIR /Library/Frameworks/GAMS.framework/Versions/44/Resources
 
 # remove install file
 RUN rm /opt/gams/gamsFiles/linux_x64_64_sfx.exe
