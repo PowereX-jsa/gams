@@ -1,4 +1,4 @@
-FROM powerex/gams-init:latest
+FROM powerex/gams-init:44.2.0
 
 USER root
 
