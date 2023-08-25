@@ -1,13 +1,18 @@
-FROM powerex/gams-init:44.2.0
+FROM powerex/gams-init:latest
 
-FROM public.ecr.aws/lambda/java:11
+FROM public.ecr.aws/lambda/java:17
 
-RUN mkdir ./gams
+COPY --from=0 /opt/gams/gamsFiles/linux_x64_64_sfx.exe ./
 
-COPY --from=0 /opt/gams/gamsFiles/linux_x64_64_sfx.exe ./gams/
+RUN chmod +x ./linux_x64_64_sfx.exe
+RUN ./linux_x64_64_sfx.exe
 
-RUN ls -la "./gams"
+# check install dir
+RUN pwd
+RUN ls -la .
 
-RUN chmod +x ./gams/linux_x64_64_sfx.exe
-RUN ./gams/linux_x64_64_sfx.exe
-RUN rm ./gams/linux_x64_64_sfx.exe
+# export gams directory as env var for future application use
+ENV GAMS_SYSTEM_DIR /var/task/gams33.2_linux_x64_64_sfx
+
+# remove installation file 
+RUN rm ./linux_x64_64_sfx.exe

@@ -33,9 +33,9 @@ jobs:
       - name: Set docker tag
         run: |
           if [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
-              echo "TAG=${{ secrets.DOCKER_HUB_USERNAME }}/gams-lambda-java:latest,${{ secrets.DOCKER_HUB_USERNAME }}/gams:$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+              echo "TAG=${{ secrets.DOCKER_HUB_USERNAME }}/gams-lambda-java:latest,${{ secrets.DOCKER_HUB_USERNAME }}/gams-lambda-java:$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
           else
-              echo "TAG=${{ secrets.DOCKER_HUB_USERNAME }}/gams-lambda-java:test-deploy" >> "$GITHUB_ENV"
+              echo "TAG=${{ secrets.DOCKER_HUB_USERNAME }}/gams-lambda-java:$(echo test-deploy_${{ github.head_ref }} | tr -s '/' '_' | tr -s '#' '_' )" >> "$GITHUB_ENV"
           fi
 
       - name: Set up Docker Buildx
