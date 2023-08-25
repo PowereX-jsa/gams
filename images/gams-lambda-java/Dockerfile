@@ -10,9 +10,10 @@ RUN ./linux_x64_64_sfx.exe
 # check install dir
 RUN pwd
 RUN ls -la .
+RUN /var/task/gams44.2_linux_x64_64_sfx
 
 # export gams directory as env var for future application use
-ENV GAMS_SYSTEM_DIR /var/task/gams33.2_linux_x64_64_sfx
+ENV GAMS_SYSTEM_DIR /var/task/gams44.2_linux_x64_64_sfx
 
 # remove installation file 
 RUN rm ./linux_x64_64_sfx.exe
