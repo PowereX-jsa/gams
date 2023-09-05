@@ -16,7 +16,6 @@ RUN ls -la /var/task/gams44.2_linux_x64_64_sfx
 ENV GAMS_SYSTEM_DIR /var/task/gams44.2_linux_x64_64_sfx
 
 RUN ls -la ${LAMBDA_TASK_ROOT}
-RUN ls -la ${LAMBDA_TASK_ROOT}/lib/
 
 COPY ${GAMS_SYSTEM_DIR}/apifiles/Java/api/* ${LAMBDA_TASK_ROOT}/lib/
 
