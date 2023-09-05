@@ -15,6 +15,7 @@ RUN ls -la /var/task/gams44.2_linux_x64_64_sfx
 # export gams directory as env var for future application use
 ENV GAMS_SYSTEM_DIR /var/task/gams44.2_linux_x64_64_sfx
 
+RUN mkdir ${LAMBDA_TASK_ROOT}/lib/
 RUN ls -la ${LAMBDA_TASK_ROOT}
 
 RUN cp ${GAMS_SYSTEM_DIR}/apifiles/Java/api/* ${LAMBDA_TASK_ROOT}/lib/
