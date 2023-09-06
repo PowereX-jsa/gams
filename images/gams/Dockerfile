@@ -10,14 +10,12 @@ RUN apt-get install -y git
 
 # copy gams files
 COPY ./gams-install-dir/gamsFiles/docker-install-java.sh /opt/gams/gamsFiles/docker-install-java.sh
-COPY ./gams-install-dir/gamsFiles/test-file.gms /opt/gams/gamsFiles/test-file.gms
 
 # install gams
 WORKDIR /opt/gams
 RUN ls -la /opt/gams
 RUN ls -la /opt/gams/gamsFiles
 RUN chmod +x /opt/gams/gamsFiles/linux_x64_64_sfx.exe
-RUN ls -la /opt/gams/gamsFiles
 RUN /opt/gams/gamsFiles/linux_x64_64_sfx.exe
 
 ENV GAMS_SYSTEM_DIR /opt/gams/gams44.2_linux_x64_64_sfx
