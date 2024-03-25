@@ -2,6 +2,10 @@ FROM powerex/gams-init:44.2.0
 
 FROM public.ecr.aws/lambda/java:17
 
+USER root
+
+SHELL ["/bin/bash", "-c"]
+
 COPY --from=0 /opt/gams/gamsFiles/linux_x64_64_sfx.exe ./
 
 # install gams
